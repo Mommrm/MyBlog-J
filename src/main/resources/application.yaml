@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/personblog?characterEncoding=utf8&useSSL=true&serverTimezone=UTC
     username: root
-    password: Mo2002426
+    password: root
   data:
     redis:
       host: 192.168.88.128
