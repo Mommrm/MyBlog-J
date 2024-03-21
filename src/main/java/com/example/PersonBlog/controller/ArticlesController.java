@@ -1,6 +1,7 @@
 package com.example.PersonBlog.controller;
 
 
+import DTO.ArticleDTO;
 import com.example.PersonBlog.entity.Article;
 import com.example.PersonBlog.service.Impl.ArticleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,13 @@ public class ArticlesController {
     public List<Article> getArticleList(@RequestParam("listPageNum") int listPageNum, @RequestParam("queryRule") String queryRule , @RequestParam("showMethod") String method){
         return articleServiceImpl.getArticleList(listPageNum,queryRule,method);
     }
-    //根据文章id获取文章内容
+
+    /**
+     * 对查询到的内容进行缓存
+     * 需要解决缓存击穿和穿透问题
+     * @param articleId
+     * @return
+     */
     @GetMapping("getcontent")
     public Article getArticleContent(@RequestParam("articleId") Long articleId) {
         return articleServiceImpl.getArticleContentById(articleId);

@@ -1,12 +1,21 @@
 package com.example.PersonBlog.service.Impl;
 
+import DTO.ArticleDTO;
+import DTO.RedisData;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.example.PersonBlog.dao.ArticleListMapper;
 import com.example.PersonBlog.dao.ArticleMapper;
 import com.example.PersonBlog.entity.Article;
 import com.example.PersonBlog.service.IArticleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,6 +24,11 @@ public class ArticleServiceImpl implements IArticleService {
     private ArticleMapper articleMapper;
     @Autowired
     private ArticleListMapper articleListMapper;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     //用户发布文章
     @Override
     public boolean createArticle(Article article){
@@ -57,8 +71,55 @@ public class ArticleServiceImpl implements IArticleService {
         returnArticle.setArticleAbstract(tempA.getArticleAbstract());
         returnArticle.setArticleDate(tempA.getArticleDate());
         returnArticle.setArticleTag(tempB.getArticleTag());
+//        Article returnArticle = new Article();
+//        String lockKey = "cache:article:" + articleId;
+//        // 1. 判断Redis里是否有文章缓存 Key是文章Id，存储对象是一个ArticleDTO对象
+//        String articleJson = stringRedisTemplate.opsForValue().get(lockKey);
+//        // 2. 有缓存，判断是否逻辑过期
+//        if (StrUtil.isNotBlank(articleJson)) {
+//            RedisData redisData = JSONUtil.toBean(articleJson, RedisData.class);
+//            Article article = JSONUtil.toBean((JSONObject) redisData.getData(),Article.class);
+//            LocalDateTime expiredTime  = redisData.getExpiredTime();
+//            if (expiredTime.isAfter(LocalDateTime.now())){
+//                // 还没有过期
+//                return article;
+//            }
+//            // 已经过期，需要缓存重建
+//            // 2.1 获取互斥锁
+//            boolean isLock = tryLock(lockKey);
+//            // 2.2 判断是否获取锁成功
+//            if (isLock) {
+//                // 2.3 成功就开启独立线程，实现缓存重建
+//
+//
+//                // 重建完毕，释放锁
+//            }
+//            //
+//        }
+//        // 3. 没有缓存，去数据库进行查询
+//
+//        // 4. 去数据库进行查询，如果有数据，返回时应该设置逻辑过期的缓存
+//
+//        // 5. 如果没有数据，就是缓存穿透问题，也要返回一个null对象
 
         return returnArticle;
+    }
+
+    /**
+     * 获取锁
+     * @param lockKey
+     * @return
+     */
+    private boolean tryLock(String lockKey){
+        return true;
+    }
+
+    /**
+     * 释放锁
+     * @param lockKey
+     */
+    private void unLock(String lockKey){
+
     }
     //获取用户发布的所有文章
     @Override
